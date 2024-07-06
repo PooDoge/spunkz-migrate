@@ -33,21 +33,36 @@ function App() {
 
   function handleBurn() {
     burnTx = writeContract({
-      abi: senderAbi,
+      abi: senderAbi as const,
       address: SENDER_ADDRESS,
       functionName: "batchTransferToSingleWallet",
       args: [SPUNKZ_ADDRESS, BURN_ADDRESS, myTokenIdsBn],
     });
   }
 
+  let approveTx;
+
   function handleApprove() {
-    writeContract({
-      abi: nftAbi,
+    approveTx = writeContract({
+      abi: nftAbi as const,
       address: SPUNKZ_ADDRESS,
       functionName: "setApprovalForAll",
       args: [SENDER_ADDRESS, true],
     });
   }
+
+  useEffect(() => {
+    if (isFetched) {
+      if (txResult) {
+        refresh();
+      }
+      if (txError) {
+
+        refresh();
+      }
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [isFetched, txResult, txError]);
 
   return (
     <>
@@ -96,7 +111,7 @@ function App() {
         </div>
       )}
 
-      {account.status === "connected" && account.chainId === 109 && (
+      {account.status === "connected" && account.chainId === 109 && nftApproved && (
         <div>
           <h2>Step 3: Migrate NFTs</h2>
           <button onClick={() => handleBurn()} type="button">

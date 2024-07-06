@@ -1,5 +1,5 @@
-import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 // @ts-ignore
+import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 import { base, shibarium } from "wagmi/chains";
 
 /* export const config = createConfig({
@@ -26,13 +26,9 @@ export const metadata = {
 
 export const chains = [shibarium, base] as const;
 export const config = defaultWagmiConfig({
-  chains,
+  chains: chains,
   projectId,
   metadata,
 });
 
-declare module "wagmi" {
-  interface Register {
-    config: typeof config;
-  }
-}
+

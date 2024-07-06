@@ -6,52 +6,52 @@ import { BURN_ADDRESS, MULTICALL_ADDRESS, SENDER_ADDRESS, SPUNKZ_ADDRESS } from 
 import { nftAbi } from "../constants/nftAbi";
 import { useNFTBalance } from "./useNftBalance";
 
-export function useNftMigrate(account?: Address) {
-  const { chainId } = useAccount();
-  const [nftBalance, setNftBalance] = useState<number>(0);
-  const [nftBurnBalance, setNftBurnBalance] = useState<number>(0);
-  const [nftApproved, setNftApproved] = useState<boolean>(false);
-  const { myTokenIds, myTokenIdsBn, refresh: refetchBalance } = useNFTBalance(nftBalance, account?.address);
+export function useNftMigrate(account = BURN_ADDRESS) {
+    const { chainId } = useAccount();
+    const [nftBalance, setNftBalance] = useState<number>(0);
+    const [nftBurnBalance, setNftBurnBalance] = useState<number>(0);
+    const [nftApproved, setNftApproved] = useState<boolean>(false);
+    const { myTokenIds, myTokenIdsBn, refetchBalance } = useNFTBalance(nftBalance, account ?? BURN_ADDRESS);
 
-  const nftContract = {
-    address: SPUNKZ_ADDRESS,
-    abi: nftAbi,
-  } as const;
+    const nftContract = {
+        address: SPUNKZ_ADDRESS,
+        abi: nftAbi,
+    };
 
-  const { data: nftReads, refetch: refetchReads } = useReadContracts({
-    allowFailure: false,
-    contracts: [
-      {
-        ...nftContract,
-        functionName: "isApprovedForAll",
-        args: [account?.toString(), SENDER_ADDRESS],
-      },
-      {
-        ...nftContract,
-        functionName: "balanceOf",
-        args: [account?.toString()],
-      },
-      {
-        ...nftContract,
-        functionName: "balanceOf",
-        args: [BURN_ADDRESS],
-      },
-    ],
-    multicallAddress: MULTICALL_ADDRESS,
-  });
+    const { data: nftReads, refetch: refetchReads } = useReadContracts({
+        allowFailure: false,
+        contracts: [
+            {
+                ...nftContract,
+                functionName: "isApprovedForAll",
+                args: [account, SENDER_ADDRESS],
+            },
+            {
+                ...nftContract,
+                functionName: "balanceOf",
+                args: [account],
+            },
+            {
+                ...nftContract,
+                functionName: "balanceOf",
+                args: [BURN_ADDRESS],
+            },
+        ],
+        multicallAddress: MULTICALL_ADDRESS,
+    });
 
-  const refresh = () => {
-    refetchReads();
-    refetchBalance();
-  };
+    const refresh = () => {
+        refetchReads();
+        refetchBalance();
+    };
 
-  useEffect(() => {
-    if (nftReads) {
-      setNftBalance(Number(nftReads[1]));
-      setNftBurnBalance(Number(nftReads[2]));
-      setNftApproved(Boolean(nftReads[0]));
-    }
-  }, [nftReads]);
+    useEffect(() => {
+        if (nftReads) {
+            setNftBalance(Number(nftReads[1]));
+            setNftBurnBalance(Number(nftReads[2]));
+            setNftApproved(Boolean(nftReads[0]));
+        }
+    }, [nftReads]);
 
-  return { nftApproved, nftBalance, nftBurnBalance, myTokenIds, myTokenIdsBn, refresh };
+    return { nftApproved, nftBalance, nftBurnBalance, myTokenIds, myTokenIdsBn, refresh };
 }
