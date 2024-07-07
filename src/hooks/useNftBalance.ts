@@ -1,13 +1,12 @@
-// @ts-ignore
+
 import { useEffect, useState } from "react";
-import type { Address } from "viem";
+import type { Address, Abi } from "viem";
 import { useAccount, useReadContracts } from "wagmi";
 import { MULTICALL_ADDRESS, SPUNKZ_ADDRESS, BURN_ADDRESS } from "../constants";
 import { nftAbi } from "../constants/nftAbi";
 
 /**
  * Custom hook to fetch the user's NFT balance in an array of tokenId's for a specific pool.
- * @param poolId - The ID of the pool.
  * @param balance - User's total NFT balanceOf.
  * @param account - (Optional) The account address.
  * @returns An object containing the NFT token IDs and a refetch function.
@@ -16,14 +15,16 @@ export function useNFTBalance(balance: number, account = BURN_ADDRESS) {
   const { chainId, address } = useAccount();
 
   const [myTokenIds, setMyTokenIds] = useState<Array<number> | null>(null);
-  const [myTokenIdsBn, setMyTokenIdsBn] = useState<Array<bigint> | null>(null);
+  const [myTokenIdsBn, setMyTokenIdsBn] = useState<Array<bigint> | Array<unknown> | null>(null);
 
   const nftContract = {
     address: SPUNKZ_ADDRESS,
-    abi: nftAbi,
+    abi: nftAbi as Abi,
   } as const;
 
   const idReads: Array<any> = [];
+
+  // create an array of read calls to get each token ID held by account
 
   for (let i = 0; i < balance; i++) {
     idReads.push({
@@ -33,12 +34,14 @@ export function useNFTBalance(balance: number, account = BURN_ADDRESS) {
     });
   }
 
+
   const {
     data: readData,
     isError,
     isLoading,
     refetch,
-  } = useReadContracts({ allowFailure: false, contracts: idReads, multicallAddress: MULTICALL_ADDRESS });
+  } = useReadContracts({
+    contracts: idReads, allowFailure: false, multicallAddress: MULTICALL_ADDRESS });
 
   const refetchBalance = () => {
     refetch();

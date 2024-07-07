@@ -11,6 +11,9 @@ importers:
       '@tanstack/react-query':
         specifier: 5.45.1
         version: 5.45.1(react@18.3.1)
+      '@wagmi/core':
+        specifier: ^2.11.6
+        version: 2.11.6(@tanstack/query-core@5.45.0)(@types/react@18.3.3)(bufferutil@4.0.8)(react@18.3.1)(typescript@5.5.3)(utf-8-validate@5.0.10)(viem@2.17.1(bufferutil@4.0.8)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8)
       '@web3modal/wagmi':
         specifier: ^5.0.6
         version: 5.0.6(dnedmbywtjalkrvtpfdtxtlo3a)
@@ -46,7 +49,7 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       typescript:
-        specifier: ^5.4.5
+        specifier: ^5.0.4
         version: 5.5.3
       vite:
         specifier: ^5.2.11

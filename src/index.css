@@ -19,3 +19,27 @@
     color: #181818;
   }
 }
+
+button {
+  padding: 13px;
+}
+
+.responsive {
+  width: 50%;
+  height: auto;
+}
+
+@media only screen and (max-width: 600px) {
+  .responsive {
+    width: 70%;
+    height: auto;
+  }
+}
+
+/* For large screens */
+@media only screen and (min-width: 601px) {
+  .responsive {
+    width: 30%;
+    height: auto;
+  }
+}

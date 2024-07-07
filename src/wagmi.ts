@@ -29,6 +29,7 @@ export const config = defaultWagmiConfig({
   chains: chains,
   projectId,
   metadata,
+  ssr: true,
 });
 
 

@@ -22,6 +22,9 @@ createWeb3Modal({
   projectId,
   enableAnalytics: true, // Optional - defaults to your Cloud configuration
   enableOnramp: true, // Optional - false as default
+  chainImages: {
+    109: 'https://chewyswap.dog/images/chains/109.png',
+  }
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
